@@ -3,6 +3,12 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-    <h1>Bienvenido a Megacompu</h1>
-    <p>Encuentra las mejores computadoras y accesorios al mejor precio.</p>
+<div class="page-section">
+    <h1>Bienvenido a <span class="brand">Megacompu</span></h1>
+    <p>
+        Encuentra las mejores computadoras, laptops y accesorios tecnológicos al mejor precio.  
+        Nuestro compromiso es ofrecer productos de calidad con el mejor servicio.
+    </p>
+    <a href="{{ url_for('listar_productos') }}" class="btn btn-primary">Ver productos</a>
+</div>
 {% endblock %}

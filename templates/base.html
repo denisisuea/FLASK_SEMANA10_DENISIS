@@ -9,17 +9,27 @@
     <header>
         <nav>
             <a href="{{ url_for('index') }}">Inicio</a> |
-            <a href="{{ url_for('products') }}">Productos</a> |
+            <a href="{{ url_for('listar_productos') }}">Productos</a> |
             <a href="{{ url_for('about') }}">Acerca de</a>
         </nav>
     </header>
-
-    <main>
+{% with msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}
+    <div class="flash-container">
+      {% for cat, msg in msgs %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+    <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2025 - Megacompu Orellana</p>
     </footer>
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
