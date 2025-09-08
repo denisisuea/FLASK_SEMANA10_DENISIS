@@ -1,0 +1,32 @@
+[
+    {
+        "id": 4,
+        "nombre": "Impresora",
+        "cantidad": 2,
+        "precio": 450.0
+    },
+    {
+        "id": 6,
+        "nombre": "Audifonos",
+        "cantidad": 2,
+        "precio": 20.0
+    },
+    {
+        "id": 8,
+        "nombre": "Celular",
+        "cantidad": 2,
+        "precio": 150.0
+    },
+    {
+        "id": 10,
+        "nombre": "Memoria RAM",
+        "cantidad": 1,
+        "precio": 50.0
+    },
+    {
+        "id": 11,
+        "nombre": "Flash memory",
+        "cantidad": 6,
+        "precio": 5.0
+    }
+]
