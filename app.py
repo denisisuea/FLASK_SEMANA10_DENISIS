@@ -1,29 +1,19 @@
+# hacer con mysql-connector-python
 from flask import Flask, render_template, redirect, url_for, flash, request 
+from conexion.conexion import conexion, cerrar_conexion
 from datetime import datetime
-from models import db
-from forms import ProductoForm
-from inventory import Inventario
 
 app = Flask(__name__)
-
-# Configuración
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'dev-secret-key'
-db.init_app(app)
-
+app.config['SECRET_KEY'] = 'dev-secret-key'   # en producción usa variable de entorno
+ 
 @app.context_processor
 def inject_now():
-    return {'now': datetime.utcnow}
-
-with app.app_context():
-    db.create_all()
-    inventario = Inventario.cargar_desde_bd()
+    return {'now': datetime.utcnow()}
 
 # --- Rutas ---
 @app.route('/')
 def index():
-    return render_template("index.html", titulo="Megacompu - Inicio")
+    return render_template("index.html", titulo="Megacompu - Inicio")       
 
 @app.route('/about')
 def about():
@@ -32,43 +22,64 @@ def about():
 @app.route('/productos')
 def listar_productos():
     q = request.args.get('q', '').strip()
-    productos = inventario.buscar_por_nombre(q) if q else inventario.listar_todos()
+    conn = conexion()
+    cursor = conn.cursor()
+    if q:
+        cursor.execute("SELECT id, nombre, cantidad, precio FROM productos WHERE nombre LIKE %s ORDER BY nombre", (f'%{q}%',))
+    else:
+        cursor.execute("SELECT id, nombre, cantidad, precio FROM productos ORDER BY nombre")
+    productos = cursor.fetchall()
+    cerrar_conexion(conn)
     return render_template('products/list.html', title='Productos', productos=productos, q=q)
 
+# crear producto
 @app.route('/productos/nuevo', methods=['GET', 'POST'])
 def crear_producto():
-    form = ProductoForm()
-    if form.validate_on_submit():
-        try:
-            inventario.agregar(form.nombre.data, form.cantidad.data, form.precio.data)
-            flash('Producto agregado correctamente.', 'success')
-            return redirect(url_for('listar_productos'))
-        except ValueError as e:
-            form.nombre.errors.append(str(e))
-    return render_template('products/form.html', title='Nuevo producto', form=form, modo='crear')
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        cantidad = request.form['cantidad']
+        precio = request.form['precio']
+        conn = conexion()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO productos (nombre, cantidad, precio) VALUES (%s, %s, %s)", (nombre, cantidad, precio))
+        conn.commit()
+        cerrar_conexion(conn)
+        flash('Producto creado exitosamente.')
+        return redirect(url_for('listar_productos'))
+    return render_template('products/new.html', title='Nuevo Producto')
 
+# editar producto
 @app.route('/productos/<int:pid>/editar', methods=['GET', 'POST'])
 def editar_producto(pid):
-    prod = inventario.productos.get(pid)  # usamos cache de inventario
-    if not prod:
-        flash("Producto no encontrado", "warning")
-        return redirect(url_for("listar_productos"))
-
-    form = ProductoForm(obj=prod)
-    if form.validate_on_submit():
-        try:
-            inventario.actualizar(pid, form.nombre.data, form.cantidad.data, form.precio.data)
-            flash('Producto actualizado.', 'success')
+    conn = conexion()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        cantidad = request.form['cantidad']
+        precio = request.form['precio']
+        cursor.execute("UPDATE productos SET nombre=%s, cantidad=%s, precio=%s WHERE id=%s", (nombre, cantidad, precio, pid))
+        conn.commit()
+        cerrar_conexion(conn)
+        flash('Producto actualizado exitosamente.')
+        return redirect(url_for('listar_productos'))
+    else:
+        cursor.execute("SELECT id, nombre, cantidad, precio FROM productos WHERE id=%s", (pid,))
+        producto = cursor.fetchone()
+        cerrar_conexion(conn)
+        if producto is None:
+            flash('Producto no encontrado.')
             return redirect(url_for('listar_productos'))
-        except ValueError as e:
-            form.nombre.errors.append(str(e))
-    return render_template('products/form.html', title='Editar producto', form=form, modo='editar')
-
+        return render_template('products/edit.html', title='Editar Producto', producto=producto)
+# eliminar producto
 @app.route('/productos/<int:pid>/eliminar', methods=['POST'])
 def eliminar_producto(pid):
-    ok = inventario.eliminar(pid)
-    flash('Producto eliminado.' if ok else 'Producto no encontrado.', 'info' if ok else 'warning')
+    conn = conexion()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM productos WHERE id=%s", (pid,))
+    conn.commit()
+    cerrar_conexion(conn)
+    flash('Producto eliminado exitosamente.')
     return redirect(url_for('listar_productos'))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,5 @@
+ID: 4 | Nombre: Impresora | Cantidad: 2 | Precio: 450.0
+ID: 6 | Nombre: Audifonos | Cantidad: 2 | Precio: 20.0
+ID: 8 | Nombre: Celular | Cantidad: 2 | Precio: 150.0
+ID: 10 | Nombre: Memoria RAM | Cantidad: 1 | Precio: 50.0
+ID: 11 | Nombre: Flash memory | Cantidad: 6 | Precio: 5.0
