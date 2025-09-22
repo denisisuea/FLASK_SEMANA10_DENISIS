@@ -1,4 +1,4 @@
-# clase de conexion a BD sin sqlalchemy 
+# clase de conexion a BD 
 import mysql.connector
 from mysql.connector import Error
 
@@ -10,7 +10,7 @@ def conexion():
         port=3307,
         database='megacompu',
         user='root',  # luego en producción usa variable de entorno
-        password='' # luego en producción usa variable de entorno
+        password='123456' # luego en producción usa variable de entorno
     )
 
 # cerrar conexion a la base de datos

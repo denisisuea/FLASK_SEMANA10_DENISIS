@@ -1,41 +1,39 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Nuevo producto' if modo=='crear' else 'Editar producto' }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="page-section">
-    <h1>{{ 'Nuevo producto' if modo=='crear' else 'Editar producto' }}</h1>
+    <h1>{{ title }}</h1>
 
-    <form method="post" novalidate class="form-card">
-      {{ form.hidden_tag() }}
-
+    <form method="post" class="form-card">
       <div class="form-group">
-        <label>{{ form.nombre.label }}</label>
-        {{ form.nombre(class="input") }}
-        {% for e in form.nombre.errors %}
-          <small class="error">{{ e }}</small>
-        {% endfor %}
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" class="input"
+               value="{{ producto['nombre'] if producto else '' }}" required>
       </div>
 
       <div class="form-group">
-        <label>{{ form.cantidad.label }}</label>
-        {{ form.cantidad(class="input") }}
-        {% for e in form.cantidad.errors %}
-          <small class="error">{{ e }}</small>
-        {% endfor %}
+        <label for="cantidad">Cantidad</label>
+        <input type="number" id="cantidad" name="cantidad" class="input"
+               value="{{ producto['cantidad'] if producto else '' }}" required>
       </div>
 
       <div class="form-group">
-        <label>{{ form.precio.label }}</label>
-        {{ form.precio(class="input") }}
-        {% for e in form.precio.errors %}
-          <small class="error">{{ e }}</small>
-        {% endfor %}
+        <label for="precio">Precio</label>
+        <input type="number" step="0.01" id="precio" name="precio" class="input"
+               value="{{ producto['precio'] if producto else '' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" class="input" required>{{ producto['descripcion'] if producto else '' }}</textarea>
       </div>
 
       <div class="form-actions">
-        {{ form.submit(class="btn btn-primary") }}
+        <button type="submit" class="btn btn-primary">Guardar</button>
         <a class="btn btn-secondary" href="{{ url_for('listar_productos') }}">Cancelar</a>
       </div>
     </form>
 </div>
 {% endblock %}
+

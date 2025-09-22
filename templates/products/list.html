@@ -16,20 +16,27 @@
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th><th>Nombre</th><th>Cantidad</th><th>Precio</th><th>Acciones</th>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         {% for p in productos %}
         <tr>
-          <td>{{ p.id }}</td>
-          <td>{{ p.nombre }}</td>
-          <td>{{ p.cantidad }}</td>
-          <td>${{ '%.2f'|format(p.precio) }}</td>
+          <td>{{ p['id_producto'] }}</td>
+          <td>{{ p['nombre'] }}</td>
+          <td>{{ p['cantidad'] }}</td>
+          <td>${{ '%.2f'|format(p['precio']) }}</td>
+          <td>{{ p['descripcion'] }}</td>
           <td>
-            <a class="btn btn-small btn-primary" href="{{ url_for('editar_producto', pid=p.id) }}">Editar</a>
-            <form method="post" action="{{ url_for('eliminar_producto', pid=p.id) }}" style="display:inline"
-                  onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
+            <a class="btn btn-small btn-primary" href="{{ url_for('editar_producto', id_producto=p['id_producto']) }}">Editar</a>
+            <form method="post" action="{{ url_for('eliminar_producto', id_producto=p['id_producto']) }}" 
+                  style="display:inline"
+                  onsubmit="return confirm('¿Eliminar {{ p['nombre'] }}?');">
               <button type="submit" class="btn btn-danger btn-small">Eliminar</button>
             </form>
           </td>
