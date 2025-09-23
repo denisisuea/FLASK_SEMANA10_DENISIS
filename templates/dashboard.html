@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Panel{% endblock %}
+
+{% block content %}
+<section>
+  <h2>Bienvenido {{ user.nombre }}</h2>
+  <p>Has iniciado sesión con el correo: {{ user.email }}</p>
+
+  <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+</section>
+{% endblock %}

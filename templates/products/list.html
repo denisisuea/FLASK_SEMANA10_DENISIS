@@ -36,7 +36,7 @@
             <a class="btn btn-small btn-primary" href="{{ url_for('editar_producto', id_producto=p['id_producto']) }}">Editar</a>
             <form method="post" action="{{ url_for('eliminar_producto', id_producto=p['id_producto']) }}" 
                   style="display:inline"
-                  onsubmit="return confirm('¿Eliminar {{ p['nombre'] }}?');">
+                  onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
               <button type="submit" class="btn btn-danger btn-small">Eliminar</button>
             </form>
           </td>

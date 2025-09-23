@@ -9,7 +9,7 @@
       <div class="form-group">
         <label for="nombre">Nombre</label>
         <input type="text" id="nombre" name="nombre" class="input"
-               value="{{ producto['nombre'] if producto else '' }}" required>
+               value="{{ producto['nombre'] if producto else '' }}" required autocomplete="off">
       </div>
 
       <div class="form-group">
@@ -36,4 +36,3 @@
     </form>
 </div>
 {% endblock %}
-
