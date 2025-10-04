@@ -1,89 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 👈 importante para móviles -->
-    <title>{% block title %}Megacompu{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{% block title %}Megacompu{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">Megacompu</a>
-
-            <!-- Botón hamburguesa -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Menú colapsable -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('listar_productos') }}">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">Acerca de</a>
-                    </li>
-                </ul>
-
-                <!-- Menú derecho (login o usuario) -->
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link">Bienvenido, {{ current_user.nombre }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm ms-2" href="{{ url_for('logout') }}">Cerrar sesión</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="btn btn-light btn-sm ms-2" href="{{ url_for('login') }}">Iniciar sesión</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Contenido principal -->
-    <div class="container mt-4">
-        {% with msgs = get_flashed_messages(with_categories=true) %}
-          {% if msgs %}
-            <div class="mt-2">
-              {% for cat, msg in msgs %}
-                <div class="alert alert-{{ 'danger' if cat == 'error' else cat }}">{{ msg }}</div>
-              {% endfor %}
-            </div>
+<body class="d-flex flex-column min-vh-100"><!-- <- sticky footer layout -->
+ 
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div class="container">
+<a class="navbar-brand fw-bold" href="{{ url_for('index') }}">Megacompu</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+ 
+      <div class="collapse navbar-collapse" id="navbarNav">
+<ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ url_for('listar_productos') }}">Productos</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">Acerca de</a></li>
+</ul>
+ 
+        <ul class="navbar-nav">
+          {% if current_user.is_authenticated %}
+<li class="nav-item"><span class="nav-link">Bienvenido, {{ current_user.nombre }}</span></li>
+<li class="nav-item"><a class="btn btn-outline-light btn-sm ms-2" href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+          {% else %}
+<li class="nav-item"><a class="btn btn-light btn-sm ms-2" href="{{ url_for('login') }}">Iniciar sesión</a></li>
           {% endif %}
-        {% endwith %}
-        <main>
-            {% block content %}{% endblock %}
-        </main>
-    </div>
-
-    <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-4 mt-5">
-  <div class="container">
-    <p class="mb-1">&copy; 2025 - Megacompu Orellana</p>
-    <p class="mb-1">Teléfono: +593 99 123 4567 | Email: contacto@megacompu.com</p>
-    <div class="mt-2">
-      <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-      <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
-      <a href="#" class="text-white"><i class="bi bi-whatsapp"></i></a>
-    </div>
-  </div>
+</ul>
+</div>
+</div>
+</nav>
+ 
+  <!-- Contenido -->
+<main class="flex-grow-1"><!-- <- empuja el footer abajo -->
+<div class="container mt-4">
+      {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% if msgs %}
+<div class="mt-2">
+            {% for cat, msg in msgs %}
+<div class="alert alert-{{ 'danger' if cat == 'error' else cat }}">{{ msg }}</div>
+            {% endfor %}
+</div>
+        {% endif %}
+      {% endwith %}
+ 
+      {% block content %}{% endblock %}
+</div>
+</main>
+ 
+  <!-- Footer (NO fixed) -->
+<footer class="mt-auto bg-dark text-white text-center py-4">
+<div class="container">
+<p class="mb-1">&copy; 2025 - Megacompu Orellana</p>
+<p class="mb-1">Teléfono: +593 99 123 4567 | Email: contacto@megacompu.com</p>
+<div class="mt-2">
+<a href="https://www.facebook.com/megacompucoca" target="_blank" rel="noopener" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+<a href="https://www.instagram.com/megacompu_coca?igsh=MWloNGMyM203ZzY3MQ==" target="_blank" rel="noopener" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+<a href="https://whatsapp.com/channel/0029VaO3CdQI7BeNU3dhen0O" class="text-white"><i class="bi bi-whatsapp"></i></a>
+</div>
+</div>
 </footer>
-
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+ 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

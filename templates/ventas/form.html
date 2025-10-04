@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Nueva Venta{% endblock %}
+{% block content %}
+<h1>Nueva Venta</h1>
+<form method="post" action="{{ url_for('crear_venta') }}">
+  <label>Cliente</label>
+  <select name="id_cliente" required>
+    <option value="">-- Selecciona --</option>
+    {% for c in clientes %}
+      <option value="{{ c['id_cliente'] }}">{{ c['nombre'] }}</option>
+    {% endfor %}
+  </select>
+
+  <hr>
+  <table class="table">
+    
+    <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Cantidad</th></tr></thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td>{{ p['nombre'] }}</td>
+        <td>${{ '%.2f'|format(p['precio']|float) }}</td>
+        <td>{{ p['cantidad'] }}</td>
+        <td>
+          <input type="hidden" name="producto_id[]" value="{{ p['id_producto'] }}">
+          <input type="number" name="cantidad[]" min="0" max="{{ p['cantidad'] }}" value="0" style="width:80px">
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="submit" class="btn btn-primary">Guardar Venta</button>
+  <a href="{{ url_for('listar_ventas') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

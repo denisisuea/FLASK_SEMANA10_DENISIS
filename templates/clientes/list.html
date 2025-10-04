@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Clientes{% endblock %}
+{% block content %}
+<h1>Clientes</h1>
+<form method="get" action="{{ url_for('listar_clientes') }}" class="form-inline">
+  <input type="text" name="q" placeholder="Buscar nombre/cedula/email" value="{{ q or '' }}">
+  <button class="btn btn-primary">Buscar</button>
+  <a class="btn btn-secondary" href="{{ url_for('crear_cliente') }}">Nuevo</a>
+</form>
+<table class="table" style="margin-top:1rem">
+  <thead><tr><th>#</th><th>Nombre</th><th>Teléfono</th><th>Dirección</th></tr></thead>
+  <tbody>
+  {% for c in clientes %}
+    <tr>
+      <td>{{ c['id_cliente'] }}</td>
+      <td>{{ c['nombre'] }}</td>
+      <td>{{ c['telefono'] }}</td>
+      <td>{{ c['direccion'] }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

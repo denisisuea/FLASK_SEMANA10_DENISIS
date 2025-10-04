@@ -5,13 +5,27 @@
 {% block content %}
 
 <!-- Hero -->
-<section class="text-center py-5 bg-light">
-    <h1 class="display-5 fw-bold text-primary">Bienvenido a <span class="brand">MEGACOMPU</span></h1>
-    <p class="lead">Encuentra las mejores computadoras, laptops y accesorios tecnológicos al mejor precio.  
-        Nuestro compromiso es ofrecer productos de calidad con el mejor servicio.</p>
-    <a href="{{ url_for('listar_productos') }}" class="btn btn-primary btn-lg">Ver productos</a>
-    <a href="{{ url_for('about') }}" class="btn btn-outline-primary btn-lg">Conócenos</a>
+<!-- Hero Section -->
+<section class="hero d-flex align-items-center text-center">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">
+      Bienvenido a <span class="text-primary">MEGACOMPU</span>
+    </h1>
+    <p class="lead mb-4 animate__animated animate__fadeInUp">
+      💻 Tecnología de calidad, 🚀 precios imbatibles y 📦 envíos rápidos.<br>
+      Todo lo que necesitas en un solo lugar.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('listar_productos') }}" class="btn btn-primary btn-lg shadow">
+        🛒 Explorar Tienda
+      </a>
+      <a href="{{ url_for('about') }}" class="btn btn-outline-light btn-lg shadow">
+        ℹ️ Conócenos
+      </a>
+    </div>
+  </div>
 </section>
+
 
 <!-- Categorías -->
 <section class="container py-5">
@@ -19,10 +33,10 @@
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
-                <img src="{{ url_for('static', filename='img/computador.jpg') }}" alt="Laptop" class="card-img-top">
+                <img src="{{ url_for('static', filename='img/computador2.png') }}" alt="Computadoras" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Computadoras</h5>
-                    <a href="{{ url_for('listar_productos') }}" class="btn btn-primary">Explorar</a>
+                    <a href="{{ url_for('listar_productos', cat='computadoras') }}" class="btn btn-primary">Explorar</a>
                 </div>
             </div>
         </div>
@@ -31,16 +45,16 @@
                 <img src="{{ url_for('static', filename='img/laptophp.jpg') }}" alt="Laptop" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Laptops</h5>
-                    <a href="{{ url_for('listar_productos') }}" class="btn btn-primary">Explorar</a>
+                    <a href="{{ url_for('listar_productos', cat='laptops') }}" class="btn btn-primary">Explorar</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
-                <img src="{{ url_for('static', filename='img/laptophp.jpg') }}" alt="Accesorios" class="card-img-top">
+                <img src="{{ url_for('static', filename='img/accesorios2.jpg') }}" alt="Accesorios" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Accesorios</h5>
-                    <a href="{{ url_for('listar_productos') }}" class="btn btn-primary">Explorar</a>
+                    <a href="{{ url_for('listar_productos', cat='accesorios') }}" class="btn btn-primary">Explorar</a>
                 </div>
             </div>
         </div>
@@ -81,36 +95,50 @@
 </section>
 
 <!-- Testimonios -->
-  <section class="testimonios py-5 bg-light">
+<section class="testimonios py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">Lo que dicen nuestros clientes</h2>
     <div class="row">
+      
+      <!-- Testimonio 1 -->
       <div class="col-md-4">
         <div class="card shadow-sm p-3 text-center">
-          <img src="img/laptophp.jpg" alt="María López" class="rounded-circle mb-3" width="80" height="80">
+          <img src="{{ url_for('static', filename='img/persona1.jpg') }}" 
+               alt="María López" 
+               class="rounded-circle mb-3" 
+               width="80" height="80">
           <p>"Compré mi laptop en Megacompu y estoy feliz con la rapidez y la calidad del servicio."</p>
           <h6 class="mt-3 mb-0">– María López</h6>
         </div>
       </div>
+
+      <!-- Testimonio 2 -->
       <div class="col-md-4">
         <div class="card shadow-sm p-3 text-center">
-          <img src="img/carlos.jpg" alt="Carlos Pérez" class="rounded-circle mb-3" width="80" height="80">
+          <img src="{{ url_for('static', filename='img/persona2.jpg') }}" 
+               alt="Carlos Pérez" 
+               class="rounded-circle mb-3" 
+               width="80" height="80">
           <p>"Excelente atención y productos originales. Recomiendo 100% esta tienda."</p>
           <h6 class="mt-3 mb-0">– Carlos Pérez</h6>
         </div>
       </div>
+
+      <!-- Testimonio 3 -->
       <div class="col-md-4">
         <div class="card shadow-sm p-3 text-center">
-          <img src="img/andrea.jpg" alt="Andrea Torres" class="rounded-circle mb-3" width="80" height="80">
+          <img src="{{ url_for('static', filename='img/person3.jpg') }}" 
+               alt="Andrea Torres" 
+               class="rounded-circle mb-3" 
+               width="80" height="80">
           <p>"Necesitaba accesorios de computadora y aquí encontré todo lo que buscaba."</p>
           <h6 class="mt-3 mb-0">– Andrea Torres</h6>
         </div>
       </div>
+
     </div>
   </div>
 </section>
-
-
 
 
 {% endblock %}

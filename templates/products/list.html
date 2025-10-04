@@ -2,50 +2,119 @@
 {% block title %}Productos{% endblock %}
 
 {% block content %}
+{# Defaults seguros por si algo no viene del backend #}
+{% set _page = page|default(1, true) %}
+{% set _per_page = per_page|default(3, true) %}
+{% set _total = total|default(productos|length if productos is defined else 0, true) %}
+{% set _last_page = last_page|default((_total + _per_page - 1) // _per_page if _total else 1, true) %}
+
 <div class="page-section">
-    <h1>Inventario de Productos</h1>
+  <h1>Inventario de Productos</h1>
 
-    <!-- Formulario de búsqueda -->
-    <form method="get" action="{{ url_for('listar_productos') }}" class="form-inline">
-      <input type="text" name="q" placeholder="Buscar por nombre" value="{{ q or '' }}">
-      <button type="submit" class="btn btn-primary">Buscar</button>
-      <a class="btn btn-secondary" href="{{ url_for('crear_producto') }}">Nuevo</a>
-    </form>
+  <!-- Formulario de búsqueda -->
+  <form method="get" action="{{ url_for('listar_productos') }}" class="form-inline mb-3">
+    <input type="text" name="q" placeholder="Buscar por nombre" value="{{ q or '' }}" class="form-control me-2">
+    <button type="submit" class="btn btn-primary me-2">Buscar</button>
+    <a class="btn btn-success" href="{{ url_for('crear_producto') }}">Nuevo</a>
+  </form>
 
-    {% if productos %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Cantidad</th>
-          <th>Precio</th>
-          <th>Descripción</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for p in productos %}
-        <tr>
-          <td>{{ p['id_producto'] }}</td>
-          <td>{{ p['nombre'] }}</td>
-          <td>{{ p['cantidad'] }}</td>
-          <td>${{ '%.2f'|format(p['precio']) }}</td>
-          <td>{{ p['descripcion'] }}</td>
-          <td>
-            <a class="btn btn-small btn-primary" href="{{ url_for('editar_producto', id_producto=p['id_producto']) }}">Editar</a>
-            <form method="post" action="{{ url_for('eliminar_producto', id_producto=p['id_producto']) }}" 
-                  style="display:inline"
-                  onsubmit="return confirm('¿Eliminar {{ p.nombre }}?');">
-              <button type="submit" class="btn btn-danger btn-small">Eliminar</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p>No hay productos para mostrar.</p>
-    {% endif %}
+  {% if productos and productos|length > 0 %}
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td>{{ p['id_producto'] }}</td>
+        <td>{{ p['nombre'] }}</td>
+        <td>{{ p['cantidad'] }}</td>
+        <td>${{ (p['precio']|float)|round(2) }}</td>
+        <td>{{ p['descripcion'] }}</td>
+    
+
+        <td>
+          <!-- Botón editar -->
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('editar_producto', id_producto=p['id_producto']) }}">
+            Editar
+          </a>
+          <!-- Botón eliminar con confirmación -->
+          <form method="post"
+                action="{{ url_for('eliminar_producto', id_producto=p['id_producto']) }}"
+                style="display:inline"
+                onsubmit='return confirm("¿Eliminar {{ p["nombre"]|e }}?");'>
+            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<form method="get" action="{{ url_for('listar_productos') }}" class="form-inline mb-3">
+  <input type="hidden" name="per_page" value="{{ _per_page }}">
+  <input type="text" name="q" placeholder="Buscar por nombre" value="{{ q or '' }}" class="form-control me-2">
+  <button type="submit" class="btn btn-primary me-2">Buscar</button>
+  <a class="btn btn-success" href="{{ url_for('crear_producto') }}">Nuevo</a>
+</form>
+  <!-- Resumen -->
+  <p class="text-muted">
+    Mostrando {{ (_page-1)*_per_page + 1 }}
+    – {{ (_page-1)*_per_page + productos|length }}
+    de {{ _total }}
+  </p>
+
+  <!-- Paginación con Bootstrap -->
+  <nav aria-label="Paginación">
+    <ul class="pagination">
+      <!-- Anterior -->
+      <li class="page-item {% if _page == 1 %}disabled{% endif %}">
+       <a class="page-link" href="{{ url_for('listar_productos', page=_page-1, q=q, per_page=_per_page) }}">&laquo;</a>
+
+      </li>
+
+      {# Ventana de páginas alrededor de la actual #}
+      {% set start_page = [1, _page-2]|max %}
+      {% set end_page = [_last_page, _page+2]|min %}
+
+      {% if start_page > 1 %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', page=1, q=q, per_page=_per_page) }}">1</a></li>
+        {% if start_page > 2 %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endif %}
+
+      {% for pnum in range(start_page, end_page + 1) %}
+        <li class="page-item {% if pnum == _page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('listar_productos', page=pnum, q=q, per_page=_per_page) }}">{{ pnum }}</a>
+
+        </li>
+      {% endfor %}
+
+      {% if end_page < _last_page %}
+        {% if end_page < _last_page - 1 %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', page=_last_page, q=q, per_page=_per_page) }}">{{ _last_page }}</a></li>
+      {% endif %}
+
+      <!-- Siguiente -->
+      <li class="page-item {% if _page == _last_page %}disabled{% endif %}">
+        <a class="page-link" href="{{ url_for('listar_productos', page=_page+1, q=q, per_page=_per_page) }}">&raquo;</a>
+
+      </li>
+    </ul>
+  </nav>
+
+  {% else %}
+  <p>No hay productos para mostrar.</p>
+  {% endif %}
 </div>
 {% endblock %}

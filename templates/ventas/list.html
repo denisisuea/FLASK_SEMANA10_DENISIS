@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Ventas{% endblock %}
+{% block content %}
+<h1>Ventas</h1>
+<a class="btn btn-primary" href="{{ url_for('crear_venta') }}">Nueva Venta</a>
+<table class="table" style="margin-top:1rem">
+  <thead><tr><th>#</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+  <tbody>
+    {% for v in ventas %}
+    <tr>
+      <td>{{ v['id_venta'] }}</td>
+      <td>{{ v['id_producto'] }}</td>
+      <td>{{ v['id_cliente'] }}</td>
+      <td>{{ v['cantidad'] }}</td>
+      <td>{{ v['fecha'] }}</td>
+      <td>${{ '%.2f'|format(v['total']|float) }}</td>
+      <td>{{ v['estado'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
