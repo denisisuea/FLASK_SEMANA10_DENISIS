@@ -29,14 +29,14 @@
 
 <!-- Categorías -->
 <section class="container py-5">
-    <h2 class="text-center mb-4">Categorías Destacadas</h2>
+    <h2 class="text-center mb-4">Tecnología que se adapta a ti</h2>
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <img src="{{ url_for('static', filename='img/computador2.png') }}" alt="Computadoras" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Computadoras</h5>
-                    <a href="{{ url_for('listar_productos', cat='computadoras') }}" class="btn btn-primary">Explorar</a>
+                    <p class="card-text">Encuentra equipos que combinan potencia y diseño para tus proyectos personales y profesionales.</p>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <img src="{{ url_for('static', filename='img/laptophp.jpg') }}" alt="Laptop" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Laptops</h5>
-                    <a href="{{ url_for('listar_productos', cat='laptops') }}" class="btn btn-primary">Explorar</a>
+                    <p class="card-text">igeras, rápidas y con batería de larga duración para acompañarte a todas partes.</p>
                 </div>
             </div>
         </div>
@@ -54,7 +54,8 @@
                 <img src="{{ url_for('static', filename='img/accesorios2.jpg') }}" alt="Accesorios" class="card-img-top">
                 <div class="card-body text-center">
                     <h5 class="card-title">Accesorios</h5>
-                    <a href="{{ url_for('listar_productos', cat='accesorios') }}" class="btn btn-primary">Explorar</a>
+                    <!--<a href="{{ url_for('listar_productos', cat='accesorios') }}" class="btn btn-primary">Explorar</a>-->
+                    <p class="card-text">Complementa tu experiencia tecnológica con nuestros accesorios de alta calidad.</p> 
                 </div>
             </div>
         </div>

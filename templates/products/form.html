@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
@@ -30,6 +31,7 @@
         class="input"
         value="{{ producto['cantidad'] if producto else '' }}"
         required
+        min="1"
       >
     </div>
 
@@ -44,6 +46,7 @@
         class="input"
         value="{{ producto['precio'] if producto else '' }}"
         required
+        min="0"
       >
     </div>
 
@@ -64,9 +67,9 @@
       <select id="categoria_nombre" name="categoria_nombre" class="input" required>
         <option value="">-- Selecciona --</option>
         {% for nombre in categorias_ui %}
-        <option value="{{ nombre }}" {% if producto and producto['categoria_nombre'] == nombre %}selected{% endif %}>
-          {{ nombre|capitalize }}
-        </option>
+          <option value="{{ nombre }}" {% if producto and producto['categoria_nombre'] == nombre %}selected{% endif %}>
+            {{ nombre|capitalize }}
+          </option>
         {% endfor %}
       </select>
     </div>
@@ -77,9 +80,9 @@
       <select id="marca" name="marca" class="input" required>
         <option value="">-- Selecciona --</option>
         {% for m in marcas_ui %}
-        <option value="{{ m }}" {% if producto and producto['marca'] == m %}selected{% endif %}>
-          {{ m }}
-        </option>
+          <option value="{{ m }}" {% if producto and producto['marca'] == m %}selected{% endif %}>
+            {{ m }}
+          </option>
         {% endfor %}
       </select>
     </div>

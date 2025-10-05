@@ -269,35 +269,79 @@ def crear_producto():
         marcas_ui=marcas_ui            # -> ['Acer','Apple','Asus','Dell',...,'Genérica',...]
     )
 
+
+#Ruta para editar producto
+
+# Ruta para editar producto
 @app.route('/productos/<int:id_producto>/editar', methods=['GET', 'POST'])
 @fresh_login_required
 def editar_producto(id_producto):
     conn = conexion()
     cursor = conn.cursor(dictionary=True)
+
+    # --- Si se envía el formulario (POST) ---
     if request.method == 'POST':
         nombre = request.form['nombre']
         cantidad = request.form['cantidad']
         precio = request.form['precio']
         descripcion = request.form['descripcion']
+        categoria_nombre = request.form['categoria_nombre']
+        marca = request.form['marca']
+
+        # Buscar ID de la categoría según nombre y marca
         cursor.execute(
-            "UPDATE productos SET nombre=%s, cantidad=%s, precio=%s, descripcion=%s WHERE id_producto=%s",
-            (nombre, cantidad, precio, descripcion, id_producto)
+            "SELECT id_categoria FROM categorias WHERE nombre = %s AND marca = %s",
+            (categoria_nombre, marca)
         )
+        categoria = cursor.fetchone()
+        id_categoria = categoria['id_categoria'] if categoria else None
+
+        # Actualizar producto
+        cursor.execute("""
+            UPDATE productos 
+            SET nombre=%s, cantidad=%s, precio=%s, descripcion=%s, id_categoria=%s
+            WHERE id_producto=%s
+        """, (nombre, cantidad, precio, descripcion, id_categoria, id_producto))
         conn.commit()
+
         cerrar_conexion(conn)
-        flash('Producto actualizado exitosamente.')
+        flash('Producto actualizado exitosamente.', 'success')
         return redirect(url_for('listar_productos'))
+
+    # --- Si es método GET (mostrar formulario) ---
     else:
-        cursor.execute(
-            "SELECT id_producto, nombre, cantidad, precio, descripcion FROM productos WHERE id_producto=%s",
-            (id_producto,)
-        )
+        # Traer producto con su categoría y marca
+        cursor.execute("""
+            SELECT 
+                p.id_producto, p.nombre, p.cantidad, p.precio, p.descripcion,
+                c.nombre AS categoria_nombre, c.marca AS marca
+            FROM productos p
+            JOIN categorias c ON p.id_categoria = c.id_categoria
+            WHERE p.id_producto = %s
+        """, (id_producto,))
         producto = cursor.fetchone()
-        cerrar_conexion(conn)
+
         if producto is None:
-            flash('Producto no encontrado.')
+            cerrar_conexion(conn)
+            flash('Producto no encontrado.', 'warning')
             return redirect(url_for('listar_productos'))
-    return render_template('products/form.html', title='Editar Producto', producto=producto)
+
+        # Cargar todas las combinaciones de categoría y marca
+        cursor.execute("SELECT nombre, marca FROM categorias")
+        filas = cursor.fetchall()
+        categorias_ui = list({f['nombre'] for f in filas})
+        marcas_ui = list({f['marca'] for f in filas})
+
+        cerrar_conexion(conn)
+
+        return render_template(
+            'products/form.html',
+            title='Editar Producto',
+            producto=producto,
+            categorias_ui=categorias_ui,
+            marcas_ui=marcas_ui
+        )
+
 
 @app.route('/productos/<int:id_producto>/eliminar', methods=['POST'])
 @fresh_login_required
